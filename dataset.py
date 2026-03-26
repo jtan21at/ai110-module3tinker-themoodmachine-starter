@@ -23,6 +23,22 @@ POSITIVE_WORDS = [
     "chill",
     "relaxed",
     "amazing",
+    # extended vocabulary
+    "proud",
+    "hopeful",
+    "joy",
+    "wonderful",
+    "fantastic",
+    "grateful",
+    "lucky",
+    "perfect",
+    "yay",
+    "fire",   # slang: "this is fire" = excellent
+    "sick",   # slang: "that was sick" = awesome
+    "lit",    # slang: "the party was lit" = great
+    "accomplished",
+    "nice",
+    "peaceful",
 ]
 
 NEGATIVE_WORDS = [
@@ -36,6 +52,18 @@ NEGATIVE_WORDS = [
     "stressed",
     "hate",
     "boring",
+    # extended vocabulary
+    "exhausted",
+    "disaster",
+    "miserable",
+    "worried",
+    "horrible",
+    "rough",
+    "done",      # slang: "I'm so done" = fed up
+    "frustrated",
+    "dread",
+    "worthless",
+    "stuck",
 ]
 
 # ---------------------------------------------------------------------
@@ -67,28 +95,43 @@ TRUE_LABELS = [
     "negative",  # "I am not happy about this"
 ]
 
-# TODO: Add 5-10 more posts and labels.
-#
-# Requirements:
-#   - For every new post you add to SAMPLE_POSTS, you must add one
-#     matching label to TRUE_LABELS.
-#   - SAMPLE_POSTS and TRUE_LABELS must always have the same length.
-#   - Include a variety of language styles, such as:
-#       * Slang ("lowkey", "highkey", "no cap")
-#       * Emojis (":)", ":(", "🥲", "😂", "💀")
-#       * Sarcasm ("I absolutely love getting stuck in traffic")
-#       * Ambiguous or mixed feelings
-#
-# Tips:
-#   - Try to create some examples that are hard to label even for you.
-#   - Make a note of any examples that you and a friend might disagree on.
-#     Those "edge cases" are interesting to inspect for both the rule based
-#     and ML models.
-#
-# Example of how you might extend the lists:
-#
-# SAMPLE_POSTS.append("Lowkey stressed but kind of proud of myself")
-# TRUE_LABELS.append("mixed")
-#
-# Remember to keep them aligned:
-#   len(SAMPLE_POSTS) == len(TRUE_LABELS)
+# New posts added for Parts 1–3.
+# These cover slang, emojis, sarcasm, negation, and mixed feelings
+# to stress-test the rule-based model and reveal its limitations.
+
+SAMPLE_POSTS.extend([
+    "This is lowkey fire 🔥",                                    # slang + emoji
+    "I absolutely love being stuck in traffic 🙄",               # sarcasm  (BREAKER)
+    "Exhausted but so proud of what I accomplished today",       # mixed emotions
+    "That movie was sick, no cap",                               # modern slang
+    "lol this is a complete disaster 💀",                        # ironic negativity
+    "Not bad at all, actually pretty good",                      # negation
+    "Honestly idk how I feel right now",                         # ambiguous / neutral
+    "Today started rough but ended on a happy note",             # mixed arc
+    "I'm so done with everything 😤",                           # slang + emoji
+    "Could be worse I guess",                                    # understated neutral
+])
+
+# Human labels for the new posts above.
+# Note: post 2 ("I absolutely love being stuck in traffic 🙄") is sarcasm.
+# A human reads it as negative, but the rule-based model sees "love" as
+# positive and 🙄 as negative, predicting "mixed" — an intentional failure
+# documented in the model card (Part 3 breaker sentence).
+TRUE_LABELS.extend([
+    "positive",   # "This is lowkey fire 🔥"
+    "negative",   # "I absolutely love being stuck in traffic 🙄" (sarcasm)
+    "mixed",      # "Exhausted but so proud of what I accomplished today"
+    "positive",   # "That movie was sick, no cap"
+    "negative",   # "lol this is a complete disaster 💀"
+    "positive",   # "Not bad at all, actually pretty good"
+    "neutral",    # "Honestly idk how I feel right now"
+    "mixed",      # "Today started rough but ended on a happy note"
+    "negative",   # "I'm so done with everything 😤"
+    "neutral",    # "Could be worse I guess"
+])
+
+# Quick sanity check — will raise an error early if lists fall out of sync.
+assert len(SAMPLE_POSTS) == len(TRUE_LABELS), (
+    f"SAMPLE_POSTS ({len(SAMPLE_POSTS)}) and TRUE_LABELS "
+    f"({len(TRUE_LABELS)}) must be the same length."
+)
